@@ -5,100 +5,447 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>رحلة المطابخ السحابية | KitchenPark</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
 
         :root {
-            --bg-dark: #050505;
-            --surface: rgba(255, 255, 255, 0.03);
-            --surface-hover: rgba(9, 153, 153, 0.1);
-            --accent: #099999;
-            --text-main: #f0f0f0;
-            --text-muted: #a0a0a0;
-            --border: rgba(9, 153, 153, 0.3);
-            --glow: 0 0 20px rgba(9, 153, 153, 0.5);
+            /* Premium Color System */
+            --brand-primary: #099999;
+            --brand-light: #16cccc;
+            --brand-dark: #055555;
+            
+            --bg-base: #030406;
+            --bg-ambient: radial-gradient(circle at 15% 50%, rgba(9, 153, 153, 0.08), transparent 50%),
+                          radial-gradient(circle at 85% 30%, rgba(9, 153, 153, 0.05), transparent 50%);
+            
+            --surface-100: rgba(255, 255, 255, 0.02);
+            --surface-200: rgba(255, 255, 255, 0.04);
+            --surface-300: rgba(255, 255, 255, 0.08);
+            
+            --text-h: #ffffff;
+            --text-p: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --border-light: rgba(255, 255, 255, 0.06);
+            --border-brand: rgba(9, 153, 153, 0.3);
+            
+            --glow-subtle: 0 4px 30px rgba(0, 0, 0, 0.5);
+            --glow-brand: 0 0 24px rgba(9, 153, 153, 0.2);
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            
+            --transition-smooth: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+        }
+
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.8;
+            background-color: var(--bg-base);
+            background-image: var(--bg-ambient);
+            background-attachment: fixed;
+            color: var(--text-p);
+            line-height: 1.9;
             overflow-x: hidden;
-            scroll-behavior: smooth;
+            font-size: 1.1rem;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* تأثيرات الظهور عند التمرير */
-        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-300); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
 
-        /* حاويات الزجاج (Glassmorphism) */
-        .glass-card {
-            background: var(--surface);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-right: 3px solid var(--accent);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: 0.3s;
+        /* Typography */
+        h1, h2, h3, h4 {
+            color: var(--text-h);
+            font-weight: 700;
+            line-height: 1.3;
         }
-        .glass-card:hover { border-color: var(--accent); box-shadow: var(--glow); transform: translateY(-5px); }
 
-        /* شريط التقدم الجانبي */
+        strong { color: #e4e4e7; font-weight: 700; }
+
+        /* Progress Bar */
         #progress-bar {
-            position: fixed; top: 0; right: 0; width: 4px; height: 0%;
-            background: var(--accent); z-index: 9999; box-shadow: var(--glow);
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 4px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--brand-dark), var(--brand-light));
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(9, 153, 153, 0.5);
+            border-radius: 0 2px 2px 0;
+            transition: width 0.1s ease-out;
         }
 
         /* Hero Section */
         .hero {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 20px; background: radial-gradient(circle at center, #111, #000);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px 5%;
             position: relative;
         }
-        .hero h1 { font-size: 3rem; color: var(--accent); margin-bottom: 20px; text-shadow: var(--glow); }
-        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; }
-        
-        /* مؤشر النزول للأسفل */
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(9, 153, 153, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .hero-badge {
+            background: rgba(9, 153, 153, 0.1);
+            border: 1px solid var(--border-brand);
+            color: var(--brand-light);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--brand-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 1000px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-p);
+            max-width: 700px;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        /* Scroll Indicator */
         .scroll-down {
-            position: absolute; bottom: 40px; width: 30px; height: 50px;
-            border: 2px solid var(--accent); border-radius: 20px;
+            position: absolute;
+            bottom: 50px;
+            width: 32px;
+            height: 54px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            transition: var(--transition-smooth);
         }
+        .scroll-down:hover { border-color: var(--brand-primary); }
         .scroll-down::before {
-            content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-            width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
-            animation: bounce 2s infinite;
+            content: '';
+            position: absolute;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            background: var(--brand-light);
+            border-radius: 50%;
+            animation: scrollBounce 2s cubic-bezier(0.15, 0.41, 0.69, 0.94) infinite;
         }
-        @keyframes bounce { 0%, 100% { top: 10px; opacity: 1; } 50% { top: 30px; opacity: 0.2; } }
 
-        /* تصميم الأقسام (Sections) */
-        section { padding: 100px 10%; max-width: 1400px; margin: auto; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        section h2 { font-size: 2.2rem; margin-bottom: 40px; color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 10px; display: inline-block; }
+        /* Layout Sections */
+        section {
+            padding: 120px 5%;
+            max-width: 1200px;
+            margin: auto;
+            position: relative;
+        }
 
-        /* تصميم القوائم القابلة للطي (Accordion) */
-        details { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
-        summary { padding: 20px; font-weight: bold; font-size: 1.2rem; cursor: pointer; background: rgba(0,0,0,0.3); color: var(--accent); list-style: none; display: flex; justify-content: space-between; align-items: center; }
-        summary::-webkit-details-marker { display: none; }
-        details p { padding: 20px; color: var(--text-main); border-top: 1px solid var(--border); }
+        section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+        }
+
+        section h2 {
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            margin-bottom: 60px;
+            color: var(--text-h);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        section h2::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-brand), transparent);
+        }
+
+        /* Glass Cards (Premium UI) */
+        .glass-card {
+            background: var(--surface-100);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--glow-subtle);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 4px; height: 100%;
+            background: var(--brand-primary);
+            opacity: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: var(--surface-200);
+            border-color: rgba(9, 153, 153, 0.2);
+            box-shadow: var(--glow-brand);
+        }
+
+        .glass-card:hover::before { opacity: 1; }
+
+        /* Accordions */
+        details {
+            background: var(--surface-100);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            transition: var(--transition-smooth);
+        }
+        details:hover { border-color: var(--border-brand); background: var(--surface-200); }
         
-        /* تصميم التبويبات (Tabs) */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); padding: 12px 24px; cursor: pointer; border-radius: 30px; transition: 0.3s; font-weight: bold; }
-        .tab-btn:hover, .tab-btn.active { background: var(--accent); color: #000; box-shadow: var(--glow); }
-        .tab-content { display: none; animation: fadeIn 0.5s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        summary {
+            padding: 24px 30px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-h);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-smooth);
+        }
+        summary::-webkit-details-marker { display: none; }
+        
+        summary span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--surface-300);
+            color: var(--brand-light);
+            transition: var(--transition-smooth);
+            font-size: 1.4rem;
+        }
+        
+        details[open] summary span { transform: rotate(45deg); background: var(--brand-primary); color: #000; }
+        details[open] summary { color: var(--brand-light); border-bottom: 1px solid var(--border-light); }
+        details p { padding: 30px; color: var(--text-p); animation: fadeIn 0.4s ease-out; }
 
-        /* الجداول */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--surface); border-radius: 8px; overflow: hidden; }
-        th, td { padding: 15px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        th { background: rgba(9, 153, 153, 0.2); color: var(--accent); font-weight: bold; }
-        tr:hover { background: var(--surface-hover); }
+        /* Premium Tabs */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            background: var(--surface-100);
+            padding: 8px;
+            border-radius: 100px;
+            border: 1px solid var(--border-light);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
 
-        /* تمييز الأردن */
-        .spotlight { border: 2px solid var(--accent); background: linear-gradient(45deg, rgba(9, 153, 153, 0.05), transparent); position: relative; }
-        .spotlight::before { content: 'المركز الإقليمي'; position: absolute; top: -15px; right: 20px; background: var(--accent); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+        .tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 14px 28px;
+            cursor: pointer;
+            border-radius: 100px;
+            transition: var(--transition-smooth);
+            font-weight: 700;
+            font-size: 1rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab-btn:hover { color: var(--text-h); background: var(--surface-200); }
+        
+        .tab-btn.active {
+            background: var(--brand-primary);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(9, 153, 153, 0.4);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: tabFadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+        /* Tables (SaaS Data Grid Style) */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: var(--surface-100);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+            margin-top: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px; /* Ensure table doesn't squish on mobile */
+        }
+        
+        th, td {
+            padding: 20px 24px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-h);
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        tr:last-child td { border-bottom: none; }
+        tr { transition: var(--transition-smooth); }
+        tr:hover td { background: var(--surface-200); }
+
+        /* Spotlight Hub Card */
+        .spotlight {
+            border: 1px solid var(--brand-primary);
+            background: linear-gradient(135deg, rgba(9, 153, 153, 0.08) 0%, rgba(0,0,0,0) 100%);
+            margin-top: 60px;
+        }
+        
+        .spotlight-badge {
+            position: absolute;
+            top: 0;
+            right: 40px;
+            transform: translateY(-50%);
+            background: var(--brand-primary);
+            color: #000;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(9, 153, 153, 0.4);
+        }
+
+        /* Timeline / Process styling for Tab 3 */
+        .timeline-item {
+            position: relative;
+            padding-right: 40px;
+            margin-bottom: 40px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 5px;
+            bottom: -40px;
+            width: 2px;
+            background: var(--surface-300);
+        }
+        .timeline-item:last-child::before { display: none; }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            box-shadow: 0 0 10px var(--brand-primary);
+        }
+        .timeline-item h4 {
+            color: var(--text-h);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        /* Lists */
+        ul { list-style-type: none; }
+        ul li {
+            position: relative;
+            padding-right: 24px;
+            margin-bottom: 16px;
+        }
+        ul li::before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--brand-light);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        /* Reveal Animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Keyframes */
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(15px); opacity: 0.3; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(15px) scale(0.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            section { padding: 80px 5%; }
+            .glass-card { padding: 24px; }
+            .tabs { border-radius: var(--radius-sm); padding: 4px; }
+            .tab-btn { border-radius: var(--radius-sm); padding: 12px 20px; }
+            .hero-badge { margin-top: 40px; }
+            .spotlight-badge { right: 24px; }
+            .timeline-item { padding-right: 24px; }
+            .timeline-item::after { right: -6px; width: 10px; height: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -106,6 +453,7 @@
     <div id="progress-bar"></div>
 
     <header class="hero">
+        <div class="hero-badge">تحليل استراتيجي حصري</div>
         <h1>تقرير تحليلي شامل: هيكلية عمليات المبيعات (Sales Operations)</h1>
         <p>في قطاع المطاعم السحابية ومتطلبات النجاح المهني</p>
         <div class="scroll-down"></div>
@@ -113,7 +461,7 @@
 
     <section id="intro">
         <div class="glass-card reveal">
-            <h2>مقدمة تحليلية لقطاع المطاعم السحابية والتحول الهيكلي في صناعة الغذاء</h2>
+            <h2 style="font-size: 1.8rem; margin-bottom: 24px; color: var(--brand-light);">مقدمة تحليلية لقطاع المطاعم السحابية والتحول الهيكلي في صناعة الغذاء</h2>
             <p>يشهد قطاع تقديم الأطعمة والمشروبات على المستوى العالمي تحولاً جذرياً مدفوعاً بالتغيرات في سلوك المستهلكين والاعتماد المتزايد على التكنولوجيا. تشير التحليلات والتقديرات الاقتصادية إلى أن سوق توصيل الطعام عبر الإنترنت ينمو بوتيرة متسارعة للغاية؛ ففي الولايات المتحدة وحدها، تضاعف حجم السوق الكلي عشر مرات خلال السنوات الخمس الماضية، منتقلاً من 10 مليارات دولار إلى 100 مليار دولار، مع توقعات بأن يتسع هذا السوق ليصل إلى ما بين 500 مليار وتريليون دولار بحلول عام 2030. في قلب هذا التحول الهائل، تبرز نماذج أعمال مبتكرة تُعرف باسم "المطاعم السحابية" (Cloud Kitchens) أو "المطابخ الشبحية" (Ghost Kitchens). تمثل هذه المنشآت مساحات تجارية مُحسنة بالكامل لإعداد الطعام وتلبيته لأغراض التوصيل فقط، مما يلغي الحاجة إلى صالات الطعام التقليدية للزبائن، ويقلل بشكل كبير من التكاليف الرأسمالية والتشغيلية، واحتياجات العمالة، والنفقات العامة التي تثقل كاهل أصحاب المطاعم التقليدية.</p>
         </div>
         
@@ -130,30 +478,39 @@
 
     <section id="regional">
         <h2 class="reveal">التواجد الإقليمي والخدمات المقدمة في الشرق الأوسط</h2>
-        <p class="reveal">تركز KitchenPark بشكل مكثف على منطقة الشرق الأوسط، وتحديداً دول مجلس التعاون الخليجي، حيث تمتلك حضوراً تشغيلياً واسعاً ومدروساً بعناية لدعم العلامات التجارية في قطاع الأغذية والمشروبات (F&B) عبر ثلاثة حلول رئيسية: مساحات "CloudKitchens®" المحسنة للتوصيل، وحلول "CloudRetail®" التي توفر مساحات تخزين مرنة (رفوف، ثلاجات، مجمدات) لتسهيل العمليات اللوجستية، ووحدات الإنتاج المركزية (Central Production Units) المصممة لتلبية الطلبات ذات الحجم الكبير.</p>
-        <p class="reveal">يوضح الجدول التالي خريطة التواجد الإقليمي لشركة KitchenPark في الأسواق الرئيسية للشرق الأوسط:</p>
+        <div class="reveal">
+            <p>تركز KitchenPark بشكل مكثف على منطقة الشرق الأوسط، وتحديداً دول مجلس التعاون الخليجي، حيث تمتلك حضوراً تشغيلياً واسعاً ومدروساً بعناية لدعم العلامات التجارية في قطاع الأغذية والمشروبات (F&B) عبر ثلاثة حلول رئيسية: مساحات "CloudKitchens®" المحسنة للتوصيل، وحلول "CloudRetail®" التي توفر مساحات تخزين مرنة (رفوف، ثلاجات، مجمدات) لتسهيل العمليات اللوجستية، ووحدات الإنتاج المركزية (Central Production Units) المصممة لتلبية الطلبات ذات الحجم الكبير.</p>
+            <p style="margin-top: 16px; margin-bottom: 24px;">يوضح الجدول التالي خريطة التواجد الإقليمي لشركة KitchenPark في الأسواق الرئيسية للشرق الأوسط:</p>
+        </div>
         
-        <table class="reveal">
-            <tr><th>الدولة</th><th>التواجد التشغيلي وأبرز المواقع</th><th>سياق السوق والامتثال التنظيمي</th></tr>
-            <tr>
-                <td>الإمارات العربية المتحدة</td>
-                <td>تتواجد بكثافة في دبي بمواقع استراتيجية مثل: موتور سيتي، الخليج التجاري، واحة دبي للسيليكون، أبراج بحيرات جميرا، بر دبي، مردف، والوافي. وتتواجد في أبوظبي في "مدينة الأضواء" (City of Light).</td>
-                <td>سوق يعتمد بشكل كبير على خدمات التوصيل (Delivery-first market). توفر الشركة للعملاء توجيهاً شاملاً للحصول على التراخيص البلدية، وتصاريح الرقابة الغذائية (Foodwatch)، وشهادات الصحة والسلامة المهنية.</td>
-            </tr>
-            <tr>
-                <td>المملكة العربية السعودية</td>
-                <td>تمتلك منشآت متعددة تدعم رواد الأعمال في المدن الرئيسية الكبرى: الرياض، جدة، والمنطقة الشرقية (الدمام، الخبر، الجبيل).</td>
-                <td>توفر الشركة دعماً تنظيماً حاسماً للعملاء يشمل استخراج السجلات التجارية (CR) من وزارة التجارة، وضمان الامتثال لمعايير الهيئة العامة للغذاء والدواء السعودية (SFDA).</td>
-            </tr>
-            <tr>
-                <td>أسواق إقليمية أخرى</td>
-                <td>فروع عاملة في الكويت والبحرين، مع خطط توسع معلنة ومستقبلية لدخول السوق القطري.</td>
-                <td>تعمل هذه الأسواق كملحقات استراتيجية لشبكة الشركة، مما يتيح للعلامات التجارية التوسع السريع عبر الحدود الإقليمية دون الحاجة إلى تأسيس شركات تابعة معقدة.</td>
-            </tr>
-        </table>
+        <div class="table-container reveal">
+            <table>
+                <tr>
+                    <th>الدولة</th>
+                    <th>التواجد التشغيلي وأبرز المواقع</th>
+                    <th>سياق السوق والامتثال التنظيمي</th>
+                </tr>
+                <tr>
+                    <td><strong>الإمارات العربية المتحدة</strong></td>
+                    <td>تتواجد بكثافة في دبي بمواقع استراتيجية مثل: موتور سيتي، الخليج التجاري، واحة دبي للسيليكون، أبراج بحيرات جميرا، بر دبي، مردف، والوافي. وتتواجد في أبوظبي في "مدينة الأضواء" (City of Light).</td>
+                    <td>سوق يعتمد بشكل كبير على خدمات التوصيل (Delivery-first market). توفر الشركة للعملاء توجيهاً شاملاً للحصول على التراخيص البلدية، وتصاريح الرقابة الغذائية (Foodwatch)، وشهادات الصحة والسلامة المهنية.</td>
+                </tr>
+                <tr>
+                    <td><strong>المملكة العربية السعودية</strong></td>
+                    <td>تمتلك منشآت متعددة تدعم رواد الأعمال في المدن الرئيسية الكبرى: الرياض، جدة، والمنطقة الشرقية (الدمام، الخبر، الجبيل).</td>
+                    <td>توفر الشركة دعماً تنظيماً حاسماً للعملاء يشمل استخراج السجلات التجارية (CR) من وزارة التجارة، وضمان الامتثال لمعايير الهيئة العامة للغذاء والدواء السعودية (SFDA).</td>
+                </tr>
+                <tr>
+                    <td><strong>أسواق إقليمية أخرى</strong></td>
+                    <td>فروع عاملة في الكويت والبحرين، مع خطط توسع معلنة ومستقبلية لدخول السوق القطري.</td>
+                    <td>تعمل هذه الأسواق كملحقات استراتيجية لشبكة الشركة، مما يتيح للعلامات التجارية التوسع السريع عبر الحدود الإقليمية دون الحاجة إلى تأسيس شركات تابعة معقدة.</td>
+                </tr>
+            </table>
+        </div>
 
-        <div class="glass-card spotlight reveal" style="margin-top: 40px;">
-            <h3 style="color: var(--accent); margin-bottom: 15px;">فرع الأردن: المركز الإقليمي الاستراتيجي (Hub)</h3>
+        <div class="glass-card spotlight reveal">
+            <div class="spotlight-badge">المركز الإقليمي</div>
+            <h3 style="color: var(--brand-light); margin-bottom: 20px; font-size: 1.5rem;">فرع الأردن: المركز الإقليمي الاستراتيجي (Hub)</h3>
             <p>على الرغم من أن العمليات الميدانية وتأجير المطابخ يتركز في دول الخليج، إلا أن شركة KitchenPark اتخذت من العاصمة الأردنية "عمّان" مركزاً إقليمياً حيوياً (Regional Hub) لدعم وتمكين عملياتها في منطقة الشرق الأوسط بأكملها. يُعد مكتب عمّان نقطة ارتكاز إدارية وتجارية تُدار من خلالها عمليات المبيعات المكتبيّة (Sales Desk)، والعمليات المالية (مثل الحسابات مستحقة الدفع وأبحاث الخزينة)، وعمليات نجاح العملاء، والموارد البشرية لدعم الأسواق الخليجية.</p><br>
             <p>من الناحية التنظيمية والقانونية في المملكة الأردنية الهاشمية، تُسجل مثل هذه الكيانات والمكاتب الإقليمية كشركات تجارية تخضع لقوانين وزارة الصناعة والتجارة والتموين. وبناءً على قانون غرف التجارة الأردني رقم (70) لسنة 2003، يتطلب تأسيس هذا المكتب استخراج شهادة تسجيل تجاري، وشهادة اسم تجاري من الوزارة، بالإضافة إلى إثبات موقع العمل عبر عقد إيجار مصدق وترخيص مهن يؤكد أن الموقع يقع ضمن منطقة منظمة تجارياً تحت مظلة أمانة عمان الكبرى وغرفة تجارة عمان.</p><br>
             <p>تتميز ثقافة العمل في مكتب KitchenPark في عمّان بصرامة فيما يتعلق بالتواجد الفعلي؛ فالشركة تتبنى سياسة تلزم جميع فرق العمل المكتبية (باستثناء الوظائف الميدانية في دول الخليج) بالعمل من داخل المكتب (Onsite) لمدة خمسة أيام في الأسبوع. تُبرر الشركة هذه السياسة بإيمانها العميق بأن الابتكار، وحل المشكلات المعقدة، وإعادة تشكيل صناعة الأغذية لا يمكن أن يتحقق بكفاءة عبر العمل عن بُعد، بل يتطلب تواجداً شخصياً وتعاوناً وثيقاً واحتكاكاً مستمراً للأفكار في بيئة عمل مشتركة.</p>
@@ -161,105 +518,110 @@
     </section>
 
     <section id="deep-analytics">
-        <h2 class="reveal">التحليل المتعمق لدور العمليات</h3>
+        <h2 class="reveal">التحليل المتعمق لدور العمليات</h2>
         <div class="tabs reveal">
             <button class="tab-btn active" onclick="openTab(event, 'tab1')">تشريح الدور والدوافع</button>
             <button class="tab-btn" onclick="openTab(event, 'tab2')">SalesOps مقابل RevOps</button>
             <button class="tab-btn" onclick="openTab(event, 'tab3')">يوم العمل النمطي</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab4')">هيكلة العمولات والتكامل التقني</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab4')">هيكلة العمولات والتكامل</button>
         </div>
 
         <div id="tab1" class="tab-content active glass-card">
-            <h3 style="color: var(--accent); margin-bottom: 15px;">تشريح دور "مساعد عمليات المبيعات" (Sales Operations Associate)</h3>
+            <h3 style="color: var(--brand-light); margin-bottom: 20px;">تشريح دور "مساعد عمليات المبيعات" (Sales Operations Associate)</h3>
             <p>يُعد قسم عمليات المبيعات (SalesOps) المحرك الخفي والعمود الفقري الذي يضمن عمل فريق المبيعات بأقصى كفاءة وإنتاجية ممكنة. في بيئات المبيعات التقليدية التي تفتقر إلى هذا الدور، يقع مندوبو المبيعات ضحية لما يُعرف بـ "مفارقة الإنتاجية" (Productivity Paradox). بالرغم من توفر أدوات الذكاء الاصطناعي وأنظمة إدارة العملاء المتقدمة، يقضي مندوبو المبيعات جزءاً كبيراً ومحبطاً من وقتهم في مهام إدارية بحتة؛ مثل إدخال البيانات يدوياً، وتنسيق العقود، والبحث عن بيانات التواصل الصحيحة، ومحاولة فهم كيفية عمل الأنظمة التقنية المعقدة، بدلاً من التركيز على جوهر عملهم الذي وُظفوا من أجله: بناء العلاقات وإغلاق الصفقات التجارية.</p><br>
             <p>لتجاوز هذه العقبات، تلجأ الشركات المتقدمة مثل KitchenPark إلى توظيف "مساعد عمليات المبيعات" ليكون الدرع الواقي لفريق المبيعات ضد البيروقراطية الداخلية والفوضى التنظيمية. يهدف هذا الدور في جوهره إلى تقليل الاحتكاك في دورة المبيعات، وتبسيط سير العمل اليومي، وتزويد الإدارة العليا برؤى تحليلية دقيقة ومستندة إلى البيانات تمكنها من اتخاذ قرارات مصيرية.</p><br>
             <p>في سياق شركة KitchenPark الإقليمي، يتحمل مساعد عمليات المبيعات في مكتب عمّان قائمة طويلة ومكثفة من المسؤوليات التقنية والتشغيلية التي تخدم فرق المبيعات المنتشرة في دول الخليج. يمكن تقسيم هذه المسؤوليات إلى المحاور الاستراتيجية التالية:</p><br>
-            <ul style="list-style-position: inside; margin-bottom: 20px;">
+            <ul>
                 <li><strong>إدارة سلامة البيانات (Data Integrity Management):</strong> تعتمد الشركة بشكل شبه كلي على نظام "Salesforce" كنظام أساسي لإدارة علاقات العملاء (CRM). البيانات هي وقود الشركة، وأي تلوث في هذه البيانات (مثل الحسابات المكررة، والأرقام الخاطئة، والمراحل غير المحدثة للصفقات) يؤدي إلى قرارات كارثية والتنبؤ المالي الخاطئ. يقوم المساعد بتنظيف وصيانة والتحقق من صحة بيانات النظام بشكل دوري لضمان دقتها وموثوقيتها، وتطبيق قواعد صارمة (Validation Rules) تمنع إدخال بيانات غير مكتملة.</li>
                 <li><strong>تصميم وإدارة أنظمة العمولات (Commission Modeling):</strong> بناء وصيانة وتحديث نماذج العمولات المالية المعقدة لمندوبي المبيعات. يتطلب ذلك مهارات متقدمة في الجداول الحسابية (Excel) لضمان دقة وتوقيت حساب العمولات وإدارتها والإبلاغ عنها عبر منطقة الشرق الأوسط، مما يضمن حصول كل مندوب على مستحقاته دون تأخير أو أخطاء.</li>
                 <li><strong>هندسة تدفق العملاء المحتملين (Inbound Lead Routing):</strong> عندما يسجل مطعم ما اهتمامه باستئجار مطبخ عبر موقع الشركة، يجب أن يتم توجيه هذا "العميل المحتمل" (Lead) فوراً وبشكل آلي إلى مندوب المبيعات المناسب بناءً على معايير محددة (مثل المدينة، حجم المطعم، وتوافر المندوب). يشرف المساعد على هذا التوجيه ويراقب تقدم الصفقات عبر مراحلها المختلفة (Deal Stage Progression) ويتدخل لحل أي تعثر في التسليم بين الأقسام.</li>
                 <li><strong>التوافق الوظيفي الشامل (Cross-Functional Alignment):</strong> العمل كحلقة وصل ديناميكية ومستمرة بين قسم المبيعات والأقسام الحيوية الأخرى كالإدارة المالية (Finance) والموارد البشرية (HR) وفريق عمليات الإيرادات (RevOps). يتأكد المساعد من أن متطلبات المبيعات تتوافق مع السياسات المالية، وأن الشكاوى أو التناقضات تُحل بشكل استباقي قبل أن تتفاقم.</li>
                 <li><strong>التحليل وإعداد التقارير (Analytics and Reporting):</strong> إعداد تقارير أداء تفصيلية وملخصات لحالة خط أنابيب المبيعات (Pipeline Summaries) وتصميم لوحات معلومات (Dashboards) تفاعلية للإدارة العليا لمراجعتها بشكل دوري، وتتبع أداء المبيعات الفعلي مقابل الأهداف المحددة مسبقاً، وتسليط الضوء على الانحرافات أو المجالات التي تتطلب تدخلاً إدارياً سريعاً.</li>
             </ul>
-            <h4 style="color: var(--accent); margin-bottom: 10px;">لماذا تطلب الشركات وظيفة "عمليات المبيعات" بإلحاح؟</h4>
+            <h4 style="color: var(--text-h); margin: 30px 0 15px;">لماذا تطلب الشركات وظيفة "عمليات المبيعات" بإلحاح؟</h4>
             <p>لا يمكن للشركات سريعة النمو التي تعتمد على نماذج التوسع الجغرافي الواسع وعقود التأجير التجاري (B2B) أن تعتمد على العمليات اليدوية أو العشوائية في إدارة مبيعاتها. تتطلب إدارة مئات العقود التأجيرية للمطابخ السحابية، والتي ترتبط باشتراطات قانونية وتراخيص بلدية معقدة عبر دول مختلفة، نظاماً مركزياً صارماً وتدفقاً سلساً للمعلومات.</p>
-            <p>تطلب الشركات هذه الوظيفة لثلاثة أسباب استراتيجية عميقة: أولاً، دقة التنبؤ المالي (Accurate Sales Forecasting): تحتاج القيادة التنفيذية والمستثمرون (مثل صندوق PIF) إلى معرفة دقيقة وشبه يقينية بحجم الإيرادات المتوقعة للأشهر والأرباع السنوية القادمة من أجل التخطيط المالي وتخصيص الميزانيات التوسعية. لا يمكن بناء تنبؤ مالي دقيق دون وجود شخص متخصص يضمن أن جميع الصفقات المفتوحة في النظام واقعية ومحدثة وتعكس النوايا الحقيقية للعملاء. ثانياً، الاستغلال الأمثل للموارد (Resource Optimization): مندوبو المبيعات المحترفون (Account Executives) هم موارد بشرية باهظة التكلفة. عندما يتولى قسم عمليات المبيعات المهام الإدارية والتقنية وإعداد التقارير، يتم تفريغ هؤلاء المندوبين لقضاء 100% من وقتهم في التفاوض وبناء العلاقات مع أصحاب المطاعم، مما يؤدي مباشرة إلى زيادة الإيرادات وتقليل دورات المبيعات (Sales Cycles). ثالثاً، إدارة التعقيد التكنولوجي (Managing Tech Stack Complexity): تعتمد فرق المبيعات الحديثة على حزمة معقدة ومتكاملة من البرمجيات (مثل Salesforce، HubSpot، أنظمة الاتصال السحابي، وأدوات ذكاء الأعمال). يحتاج مندوبو المبيعات إلى خبير تقني داخلي يمتلك قدرات تحليلية (مثل كتابة استعلامات SQL والعمل على Power BI) لإعداد هذه الأدوات، ودمجها، واكتشاف الأخطاء وإصلاحها، لضمان عدم توقف العمليات التجارية لأسباب تقنية.</p>
+            <p style="margin-top: 15px;">تطلب الشركات هذه الوظيفة لثلاثة أسباب استراتيجية عميقة: أولاً، دقة التنبؤ المالي (Accurate Sales Forecasting): تحتاج القيادة التنفيذية والمستثمرون (مثل صندوق PIF) إلى معرفة دقيقة وشبه يقينية بحجم الإيرادات المتوقعة للأشهر والأرباع السنوية القادمة من أجل التخطيط المالي وتخصيص الميزانيات التوسعية. لا يمكن بناء تنبؤ مالي دقيق دون وجود شخص متخصص يضمن أن جميع الصفقات المفتوحة في النظام واقعية ومحدثة وتعكس النوايا الحقيقية للعملاء. ثانياً، الاستغلال الأمثل للموارد (Resource Optimization): مندوبو المبيعات المحترفون (Account Executives) هم موارد بشرية باهظة التكلفة. عندما يتولى قسم عمليات المبيعات المهام الإدارية والتقنية وإعداد التقارير، يتم تفريغ هؤلاء المندوبين لقضاء 100% من وقتهم في التفاوض وبناء العلاقات مع أصحاب المطاعم، مما يؤدي مباشرة إلى زيادة الإيرادات وتقليل دورات المبيعات (Sales Cycles). ثالثاً، إدارة التعقيد التكنولوجي (Managing Tech Stack Complexity): تعتمد فرق المبيعات الحديثة على حزمة معقدة ومتكاملة من البرمجيات (مثل Salesforce، HubSpot، أنظمة الاتصال السحابي، وأدوات ذكاء الأعمال). يحتاج مندوبو المبيعات إلى خبير تقني داخلي يمتلك قدرات تحليلية (مثل كتابة استعلامات SQL والعمل على Power BI) لإعداد هذه الأدوات، ودمجها، واكتشاف الأخطاء وإصلاحها، لضمان عدم توقف العمليات التجارية لأسباب تقنية.</p>
         </div>
 
         <div id="tab2" class="tab-content glass-card">
-            <h3 style="color: var(--accent); margin-bottom: 15px;">التمييز الاستراتيجي: عمليات المبيعات (SalesOps) مقابل عمليات الإيرادات (RevOps)</h3>
+            <h3 style="color: var(--brand-light); margin-bottom: 20px;">التمييز الاستراتيجي: عمليات المبيعات (SalesOps) مقابل عمليات الإيرادات (RevOps)</h3>
             <p>لكي تنجح في المقابلة وتفهم الهيكل التنظيمي لشركة KitchenPark، يجب أن تستوعب بعمق الفرق الجوهري بين عمليات المبيعات (Sales Operations) وعمليات الإيرادات (Revenue Operations - RevOps). يُعد مصطلح RevOps حديثاً نسبياً في عالم الأعمال، وجاء كحل جذري لمشكلة "الانعزال الإداري" (Silos) التي تعاني منها الشركات التقليدية.</p>
-            <p>في النماذج الإدارية القديمة، تعمل الأقسام المواجهة للعملاء كجزر منعزلة؛ قسم التسويق يطلق حملات لجلب المهتمين، وقسم المبيعات يضغط لإغلاق الصفقات بأي ثمن، وقسم نجاح العملاء (Customer Success) يحاول لاحقاً الحفاظ على هؤلاء العملاء ومنعهم من إلغاء العقود. هذا الانعزال في البيانات والأهداف والأنظمة يؤدي إلى احتكاك مستمر وتسرب هائل في الإيرادات المحتملة، حيث يعاني العميل من تجربة مجزأة وغير متناسقة.</p>
-            <p>يأتي مصطلح عمليات الإيرادات (RevOps) ليمثل النهج الشمولي والإطار التنظيمي الذي يدمج ويصطف جميع العمليات، والأنظمة التكنولوجية، والبيانات التابعة للأقسام الثلاثة (التسويق، المبيعات، ونجاح العملاء) تحت مظلة استراتيجية وقيادة واحدة. الهدف الأسمى لـ RevOps هو ضمان أن جميع الفرق التي تدر الإيرادات تعمل بانسجام تام كآلة واحدة لتحقيق نمو مستدام ومتوقع عبر "دورة حياة العميل بأكملها"؛ بدءاً من أول تفاعل للعميل المحتمل مع إعلان رقمي، مروراً بتوقيع عقد الإيجار للمطبخ السحابي، وصولاً إلى تجديد العقد وتوسيع الأعمال لسنوات قادمة.</p>
-            <p>في المقابل، عمليات المبيعات (SalesOps) هي وظيفة تكتيكية ومحورية تقع عادةً تحت المظلة الاستراتيجية الأكبر لـ RevOps (أو تعمل جنباً إلى جنب معها في الشركات الأقل نضجاً). تنحصر مسؤولية وعالم عمليات المبيعات في تحسين أداء "فريق المبيعات" حصراً، والتأكد من أنهم يمتلكون الأدوات والبيانات والمحفزات (العمولات) الصحيحة لتحقيق أهدافهم البيعية.</p>
+            <p style="margin-top: 15px;">في النماذج الإدارية القديمة، تعمل الأقسام المواجهة للعملاء كجزر منعزلة؛ قسم التسويق يطلق حملات لجلب المهتمين، وقسم المبيعات يضغط لإغلاق الصفقات بأي ثمن، وقسم نجاح العملاء (Customer Success) يحاول لاحقاً الحفاظ على هؤلاء العملاء ومنعهم من إلغاء العقود. هذا الانعزال في البيانات والأهداف والأنظمة يؤدي إلى احتكاك مستمر وتسرب هائل في الإيرادات المحتملة، حيث يعاني العميل من تجربة مجزأة وغير متناسقة.</p>
+            <p style="margin-top: 15px;">يأتي مصطلح عمليات الإيرادات (RevOps) ليمثل النهج الشمولي والإطار التنظيمي الذي يدمج ويصطف جميع العمليات، والأنظمة التكنولوجية، والبيانات التابعة للأقسام الثلاثة (التسويق، المبيعات، ونجاح العملاء) تحت مظلة استراتيجية وقيادة واحدة. الهدف الأسمى لـ RevOps هو ضمان أن جميع الفرق التي تدر الإيرادات تعمل بانسجام تام كآلة واحدة لتحقيق نمو مستدام ومتوقع عبر "دورة حياة العميل بأكملها"؛ بدءاً من أول تفاعل للعميل المحتمل مع إعلان رقمي، مروراً بتوقيع عقد الإيجار للمطبخ السحابي، وصولاً إلى تجديد العقد وتوسيع الأعمال لسنوات قادمة.</p>
+            <p style="margin-top: 15px; margin-bottom: 30px;">في المقابل، عمليات المبيعات (SalesOps) هي وظيفة تكتيكية ومحورية تقع عادةً تحت المظلة الاستراتيجية الأكبر لـ RevOps (أو تعمل جنباً إلى جنب معها في الشركات الأقل نضجاً). تنحصر مسؤولية وعالم عمليات المبيعات في تحسين أداء "فريق المبيعات" حصراً، والتأكد من أنهم يمتلكون الأدوات والبيانات والمحفزات (العمولات) الصحيحة لتحقيق أهدافهم البيعية.</p>
             
-            <table>
-                <tr><th>وجه المقارنة الاستراتيجي</th><th>عمليات المبيعات (Sales Operations)</th><th>عمليات الإيرادات (Revenue Operations)</th></tr>
-                <tr>
-                    <td>نطاق التركيز الأساسي</td>
-                    <td>ضيق وعميق: يركز حصرياً على قسم المبيعات. يهتم بتحسين خط أنابيب المبيعات (Pipeline)، زيادة إنتاجية المندوبين، التدريب البيعي، وإدارة حصص المبيعات (Quotas).</td>
-                    <td>واسع وشامل: يشمل جميع الفرق المواجهة للعملاء (التسويق، المبيعات، نجاح العملاء، الشراكات). يهتم بتجربة العميل من البداية للنهاية.</td>
-                </tr>
-                <tr>
-                    <td>الهدف التنظيمي</td>
-                    <td>الكفاءة التكتيكية: جعل فريق المبيعات يبيع بشكل أسرع وأكثر تنظيماً، وتقليل وقت إغلاق الصفقات.</td>
-                    <td>التوافق الاستراتيجي: ضمان عدم وجود تسرب في البيانات أو الإيرادات عند انتقال العميل من قسم التسويق إلى المبيعات ثم إلى الدعم.</td>
-                </tr>
-                <tr>
-                    <td>إدارة البنية التكنولوجية</td>
-                    <td>يدير أنظمة إدارة علاقات العملاء (CRM) الخاصة بالمبيعات فقط (مثل إعدادات فرص البيع في Salesforce)، وأدوات التنقيب والمكالمات.</td>
-                    <td>هندسة ودمج جميع التقنيات عبر الشركة؛ مزامنة منصات أتمتة التسويق مع أنظمة المبيعات وأنظمة تذاكر الدعم الفني لإنشاء ملف تعريف موحد للعميل.</td>
-                </tr>
-                <tr>
-                    <td>التبعية الإدارية المعتادة</td>
-                    <td>تتبع عادةً بشكل مباشر لمدير المبيعات أو نائب الرئيس للمبيعات (VP of Sales).</td>
-                    <td>تتبع لمدير الإيرادات التنفيذي (Chief Revenue Officer - CRO) لضمان حياديتها وعدم تحيزها لقسم دون آخر.</td>
-                </tr>
-            </table>
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>وجه المقارنة الاستراتيجي</th>
+                        <th>عمليات المبيعات (Sales Operations)</th>
+                        <th>عمليات الإيرادات (Revenue Operations)</th>
+                    </tr>
+                    <tr>
+                        <td><strong>نطاق التركيز الأساسي</strong></td>
+                        <td>ضيق وعميق: يركز حصرياً على قسم المبيعات. يهتم بتحسين خط أنابيب المبيعات (Pipeline)، زيادة إنتاجية المندوبين، التدريب البيعي، وإدارة حصص المبيعات (Quotas).</td>
+                        <td>واسع وشامل: يشمل جميع الفرق المواجهة للعملاء (التسويق، المبيعات، نجاح العملاء، الشراكات). يهتم بتجربة العميل من البداية للنهاية.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>الهدف التنظيمي</strong></td>
+                        <td>الكفاءة التكتيكية: جعل فريق المبيعات يبيع بشكل أسرع وأكثر تنظيماً، وتقليل وقت إغلاق الصفقات.</td>
+                        <td>التوافق الاستراتيجي: ضمان عدم وجود تسرب في البيانات أو الإيرادات عند انتقال العميل من قسم التسويق إلى المبيعات ثم إلى الدعم.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>إدارة البنية التكنولوجية</strong></td>
+                        <td>يدير أنظمة إدارة علاقات العملاء (CRM) الخاصة بالمبيعات فقط (مثل إعدادات فرص البيع في Salesforce)، وأدوات التنقيب والمكالمات.</td>
+                        <td>هندسة ودمج جميع التقنيات عبر الشركة؛ مزامنة منصات أتمتة التسويق مع أنظمة المبيعات وأنظمة تذاكر الدعم الفني لإنشاء ملف تعريف موحد للعميل.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>التبعية الإدارية المعتادة</strong></td>
+                        <td>تتبع عادةً بشكل مباشر لمدير المبيعات أو نائب الرئيس للمبيعات (VP of Sales).</td>
+                        <td>تتبع لمدير الإيرادات التنفيذي (Chief Revenue Officer - CRO) لضمان حياديتها وعدم تحيزها لقسم دون آخر.</td>
+                    </tr>
+                </table>
+            </div>
             <br>
             <p>في سياق الوظيفة المطروحة في KitchenPark، ينص الوصف الوظيفي بوضوح على أنك ستعمل "بتوجيه وتعاون من فريق عمليات الإيرادات (RevOps)". هذا يعني أنك كمسؤول عمليات مبيعات ستتولى التنفيذ التكتيكي اليومي لدعم مندوبي المبيعات، في حين أن فريق RevOps سيرسم لك الخطوط العريضة لضمان أن ما تقوم به من ترتيبات في نظام المبيعات سيتدفق بسلاسة لاحقاً إلى أنظمة المحاسبة ونجاح العملاء.</p>
         </div>
 
         <div id="tab3" class="tab-content glass-card">
-            <h3 style="color: var(--accent); margin-bottom: 15px;">تشريح يوم عمل نمطي (من 8:00 صباحاً إلى 5:00 مساءً)</h3>
-            <p>نظراً لطبيعة الدور التي تتأرجح بين التحليل العميق للبيانات وإطفاء الحرائق التشغيلية الطارئة، يتسم يوم عمل مساعد عمليات المبيعات في بيئة الشركات الناشئة سريعة النمو مثل KitchenPark بالديناميكية العالية والضغط المستمر. في ثقافة العمل التي تتطلب تواجداً مكتبياً كاملاً في عمّان، يتطلب الأمر إدارة صارمة للوقت وقدرة استثنائية على تبديل السياق (Context Switching) بين المهام.</p>
-            <p>إليك الهيكلية النمطية والتفصيلية ليوم العمل الافتراضي:</p><br>
+            <h3 style="color: var(--brand-light); margin-bottom: 20px;">تشريح يوم عمل نمطي (من 8:00 صباحاً إلى 5:00 مساءً)</h3>
+            <p style="margin-bottom: 30px;">نظراً لطبيعة الدور التي تتأرجح بين التحليل العميق للبيانات وإطفاء الحرائق التشغيلية الطارئة، يتسم يوم عمل مساعد عمليات المبيعات في بيئة الشركات الناشئة سريعة النمو مثل KitchenPark بالديناميكية العالية والضغط المستمر. في ثقافة العمل التي تتطلب تواجداً مكتبياً كاملاً في عمّان، يتطلب الأمر إدارة صارمة للوقت وقدرة استثنائية على تبديل السياق (Context Switching) بين المهام.</p>
 
-            <div style="border-right: 2px solid var(--accent); padding-right: 20px; margin-bottom: 20px;">
-                <h4 style="color: var(--text-main);">08:00 صباحاً - 09:30 صباحاً: التدقيق الصباحي ونظافة البيانات (CRM Hygiene & Morning Audit)</h4>
+            <div class="timeline-item">
+                <h4>08:00 صباحاً - 09:30 صباحاً: التدقيق الصباحي ونظافة البيانات</h4>
                 <p>يبدأ اليوم الاستراتيجي قبل أن يبدأ مندوبو المبيعات إجراء اتصالاتهم. تتمثل المهمة الأولى في الدخول إلى نظام Salesforce ومراجعة لوحات المعلومات الإدارية (Dashboards) للتحقق من سلامة البيانات التي تم إدخالها في اليوم السابق.</p>
                 <p><strong>الإجراءات الفنية:</strong> مراجعة تقارير استثناءات البيانات (Exception Reports) التي تبرز الصفقات التي لم يتم تحديث حالتها، أو العقود التي تفتقر إلى معلومات أساسية (مثل الرقم الضريبي للمطعم أو التراخيص البلدية). التحقق من عدم وجود حسابات عملاء مكررة (Duplicates) تنشأ عن إدخال نفس المطعم من قبل مندوبين مختلفين.</p>
                 <p><strong>الهدف:</strong> ضمان أن تبدأ الإدارة يومها برؤية واضحة وموثوقة تماماً لحالة خط أنابيب المبيعات (Sales Pipeline)، وأن القرارات التي ستتخذ في اجتماعات الظهيرة مبنية على حقائق وليس على بيانات مشوهة.</p>
             </div>
 
-            <div style="border-right: 2px solid var(--accent); padding-right: 20px; margin-bottom: 20px;">
-                <h4 style="color: var(--text-main);">09:30 صباحاً - 11:30 صباحاً: هندسة تدفق العملاء وحل الاختناقات (Lead Routing & Deal Progression)</h4>
+            <div class="timeline-item">
+                <h4>09:30 صباحاً - 11:30 صباحاً: هندسة تدفق العملاء وحل الاختناقات</h4>
                 <p>هذه هي فترة الذروة لتدفق العملاء المحتملين القادمين عبر القنوات الرقمية والتسويقية.</p>
                 <p><strong>الإجراءات الفنية:</strong> مراقبة النظام الآلي لتوزيع العملاء (Lead Routing). إذا قام مطعم في جدة بملء استمارة طلب إيجار مطبخ، يجب التأكد من أن النظام التقط الطلب وحوله فوراً لمندوب مبيعات في المنطقة الغربية بالسعودية يمتلك القدرة الاستيعابية للتعامل معه. في حال حدوث خطأ تقني وتوقف مسار التحويل، يجب التدخل اليدوي الفوري وتصحيح مسار العميل. كما تتم مراقبة "مراحل الصفقة" (Deal Stages)؛ فإذا بقيت صفقة مهمة في مرحلة "التفاوض" لفترة أطول من المعتاد، يتم التواصل مع المندوب لمعرفة سبب التعثر وتقديم الدعم الإداري.</p>
                 <p><strong>الهدف:</strong> تقليل وقت الاستجابة للعملاء الجدد إلى أدنى حد ممكن، مما يرفع بشكل مباشر من نسب إغلاق الصفقات (Conversion Rates)، ويمنع تسرب العملاء للمنافسين.</p>
             </div>
 
-            <div style="border-right: 2px solid var(--accent); padding-right: 20px; margin-bottom: 20px;">
-                <h4 style="color: var(--text-main);">11:30 صباحاً - 13:00 ظهراً: التنسيق المشترك وحل المشكلات التقنية (Cross-functional Sync & Troubleshooting)</h4>
+            <div class="timeline-item">
+                <h4>11:30 صباحاً - 13:00 ظهراً: التنسيق المشترك وحل المشكلات التقنية</h4>
                 <p>هذا هو وقت العمل التعاوني المكثف مع الأقسام الأخرى والتفاعل مع فريق المبيعات.</p>
                 <p><strong>الإجراءات الفنية:</strong> عقد اجتماعات تنسيقية قصيرة مع الإدارة المالية (لمراجعة الموافقات الائتمانية للعملاء الجدد) أو الموارد البشرية (لإعداد حسابات النظام لمندوبي المبيعات المعينين حديثاً). في نفس الوقت، يتم الرد على استفسارات فريق المبيعات عبر قنوات التواصل الفوري (مثل Slack)؛ قد يواجه مندوب مشكلة في إنشاء عرض سعر داخل النظام، أو يطلب تعديل صلاحيات وصوله لبيانات معينة، أو يحتاج مساعدة في فهم سياسة العمولات الجديدة.</p>
                 <p><strong>الهدف:</strong> كسر الحواجز التشغيلية أمام فريق المبيعات، وإبقائهم في الميدان للبيع بدلاً من محاربة الأعطال التقنية، وضمان التوافق التام مع سياسات الشركة الصارمة.</p>
             </div>
 
-            <div style="border-right: 2px solid var(--accent); padding-right: 20px; margin-bottom: 20px;">
-                <h4 style="color: var(--text-main);">13:00 ظهراً - 14:00 بعد الظهر: استراحة الغداء</h4>
+            <div class="timeline-item">
+                <h4>13:00 ظهراً - 14:00 بعد الظهر: استراحة الغداء</h4>
                 <p>استراحة ضرورية للفصل الذهني نظراً للجهد التحليلي العالي الذي تتطلبه وظائف العمليات. في بيئة العمل المكتبي، تُعد هذه فرصة لبناء العلاقات غير الرسمية مع الزملاء.</p>
             </div>
 
-            <div style="border-right: 2px solid var(--accent); padding-right: 20px; margin-bottom: 20px;">
-                <h4 style="color: var(--text-main);">14:00 بعد الظهر - 15:30 بعد الظهر: التحليل العميق وبناء نماذج العمولات (Commission Modeling & Deep Analytics)</h4>
+            <div class="timeline-item">
+                <h4>14:00 بعد الظهر - 15:30 بعد الظهر: التحليل العميق وبناء نماذج العمولات</h4>
                 <p>فترة الهدوء والتركيز العميق التي تستخدم فيها مهاراتك المتقدمة في Excel و Power BI.</p>
                 <p><strong>الإجراءات الفنية:</strong> استخراج بيانات المبيعات المكتملة والمحققة من نظام Salesforce (غالباً عبر أدوات دمج أو استخراج التقارير). إدخال هذه البيانات في نماذج العمولات المعقدة التي قمت ببنائها في Excel. حساب العمولات المستحقة لكل مندوب بناءً على نسبة تحقيقه للأهداف (Quota Attainment)، ومراجعة هذه الأرقام بدقة متناهية لاكتشاف أي تباين قبل إرسالها للقسم المالي لاعتماد الرواتب.</p>
                 <p><strong>الهدف:</strong> تحويل البيانات الخام المبعثرة إلى معلومات مالية دقيقة قابلة للتنفيذ (Actionable Insights)، وضمان النزاهة والشفافية في تعويضات الموظفين، وهو أمر حاسم للحفاظ على معنويات فريق المبيعات ومنع التسرب الوظيفي للكوادر المتميزة.</p>
             </div>
 
-            <div style="border-right: 2px solid var(--accent); padding-right: 20px;">
-                <h4 style="color: var(--text-main);">15:30 بعد الظهر - 17:00 مساءً: تحسين الإجراءات والتخطيط الاستراتيجي (Process Optimization & Reporting)</h4>
+            <div class="timeline-item">
+                <h4>15:30 بعد الظهر - 17:00 مساءً: تحسين الإجراءات والتخطيط الاستراتيجي</h4>
                 <p>ختام اليوم بالعمل على المشاريع طويلة الأجل والتحضير الاستباقي.</p>
                 <p><strong>الإجراءات الفنية:</strong> تحديث أو كتابة "إجراءات التشغيل القياسية" (SOPs) لتوثيق كيفية استخدام النظام لتدريب الموظفين الجدد. العمل على تحسين وتصميم لوحات تحكم جديدة (Dashboards) في Power BI بناءً على طلب الإدارة العليا لتتبع مؤشرات أداء محددة لم تكن واضحة في النظام الأساسي. أخيراً، تنظيم المهام المتبقية وتحضير جدول أولويات اليوم التالي بناءً على منهجية "صندوق الوارد الفارغ" (Inbox Zero) لضمان عدم تراكم المشكلات.</p>
                 <p><strong>الهدف:</strong> بناء بنية تحتية تشغيلية مستدامة وقابلة للتوسع (Scalable)، تمنع تكرار المشكلات الروتينية وتزيد من النضج التشغيلي للمؤسسة ككل.</p>
@@ -267,130 +629,147 @@
         </div>
 
         <div id="tab4" class="tab-content glass-card">
-            <h3 style="color: var(--accent); margin-bottom: 15px;">هيكلة أنظمة العمولات (Commission Structures) في نماذج المطابخ السحابية</h3>
+            <h3 style="color: var(--brand-light); margin-bottom: 20px;">هيكلة أنظمة العمولات (Commission Structures) في نماذج المطابخ السحابية</h3>
             <p>يُعد فهم كيفية صياغة وتحديث وإدارة نماذج العمولات المالية جزءاً بالغ الأهمية من هذا الدور، حيث تم ذكره بشكل صريح وحاسم في الوصف الوظيفي لـ KitchenPark. يمثل نظام العمولات في قطاع العقارات التجارية التقنية (B2B)، مثل المطابخ السحابية، منظومة بالغة التعقيد تختلف جذرياً عن مبيعات التجزئة البسيطة. تبيع شركات المطابخ السحابية منتجات متنوعة الآجال والقيمة؛ بدءاً من عقود الإيجار السنوية للمساحات الذكية (CloudKitchens)، وصولاً إلى تأجير الرفوف ومساحات التبريد المرنة شهرياً (CloudRetail).</p>
-            <p>لا تقتصر إيرادات هذه الشركات على الإيجار الثابت فحسب، بل قد تمتد لتشمل رسوم اشتراك تكنولوجية، أو نسبة مئوية (Commission/Revenue Share) من إجمالي الإيرادات التي يحققها المطعم من طلبات التوصيل عبر تطبيقات مثل أوبر إيتس (Uber Eats) أو ديليفرو (Deliveroo). هذا التعقيد في الإيرادات ينعكس مباشرة على كيفية تعويض ودفع العمولات لمندوبي المبيعات الذين جلبوا هذه المطاعم.</p>
-            <p>تعتمد شركات مثل KitchenPark غالباً على نماذج عمولات مُركبة وذكية (Hybrid Models) تهدف إلى تحفيز الموظفين على إغلاق صفقات ذات قيمة استراتيجية عالية، وتشجيعهم على استقطاب مطاعم ناجحة وموثوقة قادرة على الاستمرار، بدلاً من التركيز على الكم دون الكيف. من أبرز النماذج المطبقة والمحتملة في هذا السياق، والتي ستتولى إدارتها وحسابها:</p>
+            <p style="margin-top: 15px;">لا تقتصر إيرادات هذه الشركات على الإيجار الثابت فحسب، بل قد تمتد لتشمل رسوم اشتراك تكنولوجية، أو نسبة مئوية (Commission/Revenue Share) من إجمالي الإيرادات التي يحققها المطعم من طلبات التوصيل عبر تطبيقات مثل أوبر إيتس (Uber Eats) أو ديليفرو (Deliveroo). هذا التعقيد في الإيرادات ينعكس مباشرة على كيفية تعويض ودفع العمولات لمندوبي المبيعات الذين جلبوا هذه المطاعم.</p>
+            <p style="margin-top: 15px;">تعتمد شركات مثل KitchenPark غالباً على نماذج عمولات مُركبة وذكية (Hybrid Models) تهدف إلى تحفيز الموظفين على إغلاق صفقات ذات قيمة استراتيجية عالية، وتشجيعهم على استقطاب مطاعم ناجحة وموثوقة قادرة على الاستمرار، بدلاً من التركيز على الكم دون الكيف. من أبرز النماذج المطبقة والمحتملة في هذا السياق، والتي ستتولى إدارتها وحسابها:</p>
 
-            <ul style="list-style-type: none; margin: 20px 0;">
-                <li style="margin-bottom: 15px;"><strong>نموذج الراتب الأساسي + العمولة (Base Salary + Commission):</strong> يُعد هذا النموذج الهيكل الكلاسيكي والمعيار الذهبي في مبيعات B2B. يحصل مندوب المبيعات على راتب أساسي ثابت يضمن له الاستقرار المالي والأمان الوظيفي (يمثل عادة بين 50% إلى 60% من إجمالي الدخل المستهدف)، بالإضافة إلى نسبة مئوية متفق عليها وثابتة من قيمة إجمالي العقد التأجيري الذي ينجح في إبرامه مع المطعم. يضمن هذا الهيكل حماية المندوبين خلال فترات الركود، مع إبقاء الدافع قوياً لتحقيق المبيعات، ويُستخدم عادة لتعويض مديري الحسابات (Account Executives).</li>
-                <li style="margin-bottom: 15px;"><strong>نموذج العمولة المتدرجة (Tiered Commission):</strong> يُصمم هذا النموذج المعقد خصيصاً لمكافأة الأداء الاستثنائي ودفع المندوبين لتجاوز أهدافهم. في هذا النظام، تزداد نسبة العمولة التي يحصل عليها المندوب كلما تخطى حواجز بيعية معينة (Thresholds). على سبيل المثال، قد يحصل مندوب المبيعات على عمولة بنسبة 5% للمبيعات التي تصل إلى الحد المستهدف المطلوب منه (Quota)، ولكن بمجرد تجاوزه لنسبة 100% من الهدف، تقفز نسبة العمولة إلى 8% للرقم الإضافي، وإذا تجاوز 150% ترتفع إلى 12%. مهمة قسم عمليات المبيعات هنا بالغة الدقة؛ وتتمثل في التتبع الدقيق لتراكم مبيعات كل مندوب وضبط الحسابات المعقدة في Excel لضمان التطبيق الصحيح للنسبة المتصاعدة فور انتقال المندوب من شريحة إلى أخرى.</li>
-                <li style="margin-bottom: 15px;"><strong>عمولات الدخل المتبقي أو مشاركة الإيرادات (Residual / Revenue Share Commissions):</strong> نظراً لأن نماذج أعمال المطابخ السحابية تعتمد أحياناً على الحصول على نسبة من إيرادات المطعم المستقبلية المستمرة بدلاً من الإيجار الثابت لمرة واحدة، قد يُكافأ مندوب المبيعات الذي جلب المطعم بالحصول على نسبة مئوية ضئيلة ولكنها مستمرة من هذه الإيرادات، طالما ظل المطعم مستأجراً ونشطاً ويدفع مستحقاته للشركة. هذا النموذج المبتكر يغير سيكولوجية مندوب المبيعات؛ فهو لم يعد يبحث عن أي مطعم عشوائي لتأجيره مساحة، بل أصبح يبحث عن مطاعم قوية ذات قوائم طعام ناجحة ستدر طلبات هائلة وتستمر طويلاً، لأن نجاح المطعم يعني استمرار تدفق العمولة لجيبه الشخصي.</li>
+            <ul style="margin: 30px 0;">
+                <li><strong>نموذج الراتب الأساسي + العمولة (Base Salary + Commission):</strong> يُعد هذا النموذج الهيكل الكلاسيكي والمعيار الذهبي في مبيعات B2B. يحصل مندوب المبيعات على راتب أساسي ثابت يضمن له الاستقرار المالي والأمان الوظيفي (يمثل عادة بين 50% إلى 60% من إجمالي الدخل المستهدف)، بالإضافة إلى نسبة مئوية متفق عليها وثابتة من قيمة إجمالي العقد التأجيري الذي ينجح في إبرامه مع المطعم. يضمن هذا الهيكل حماية المندوبين خلال فترات الركود، مع إبقاء الدافع قوياً لتحقيق المبيعات، ويُستخدم عادة لتعويض مديري الحسابات (Account Executives).</li>
+                <li><strong>نموذج العمولة المتدرجة (Tiered Commission):</strong> يُصمم هذا النموذج المعقد خصيصاً لمكافأة الأداء الاستثنائي ودفع المندوبين لتجاوز أهدافهم. في هذا النظام، تزداد نسبة العمولة التي يحصل عليها المندوب كلما تخطى حواجز بيعية معينة (Thresholds). على سبيل المثال، قد يحصل مندوب المبيعات على عمولة بنسبة 5% للمبيعات التي تصل إلى الحد المستهدف المطلوب منه (Quota)، ولكن بمجرد تجاوزه لنسبة 100% من الهدف، تقفز نسبة العمولة إلى 8% للرقم الإضافي، وإذا تجاوز 150% ترتفع إلى 12%. مهمة قسم عمليات المبيعات هنا بالغة الدقة؛ وتتمثل في التتبع الدقيق لتراكم مبيعات كل مندوب وضبط الحسابات المعقدة في Excel لضمان التطبيق الصحيح للنسبة المتصاعدة فور انتقال المندوب من شريحة إلى أخرى.</li>
+                <li><strong>عمولات الدخل المتبقي أو مشاركة الإيرادات (Residual / Revenue Share Commissions):</strong> نظراً لأن نماذج أعمال المطابخ السحابية تعتمد أحياناً على الحصول على نسبة من إيرادات المطعم المستقبلية المستمرة بدلاً من الإيجار الثابت لمرة واحدة، قد يُكافأ مندوب المبيعات الذي جلب المطعم بالحصول على نسبة مئوية ضئيلة ولكنها مستمرة من هذه الإيرادات، طالما ظل المطعم مستأجراً ونشطاً ويدفع مستحقاته للشركة. هذا النموذج المبتكر يغير سيكولوجية مندوب المبيعات؛ فهو لم يعد يبحث عن أي مطعم عشوائي لتأجيره مساحة، بل أصبح يبحث عن مطاعم قوية ذات قوائم طعام ناجحة ستدر طلبات هائلة وتستمر طويلاً، لأن نجاح المطعم يعني استمرار تدفق العمولة لجيبه الشخصي.</li>
             </ul>
+            
             <p><strong>تحديات العمليات (Ops Challenges):</strong> تتطلب إدارة هذه العمولات دقة جراحية وشفافية مطلقة. أظهرت الأبحاث الإدارية أن العمولات الخاطئة أو المتأخرة تدمر معنويات فريق المبيعات وتؤدي إلى تسرب الكفاءات؛ فحوالي 43% من الموظفين مستعدون لترك وظائفهم من أجل زيادة رواتبهم 10%، والخطأ في العمولة يُشعرهم بالسرقة وسوء التقدير. لذلك، تطلب الشركة شخصاً مثلك لديه مهارات تحليلية صارمة، قادراً على مراجعة آلاف الأسطر من البيانات في تقارير المبيعات، ومقارنتها بنماذج العمولات المعقدة في أدوات تحليلية، وإخراج تقارير نهائية للمالية خالية من أي شوائب.</p>
 
-            <h4 style="color: var(--accent); margin-top: 25px; margin-bottom: 10px;">دمج مهاراتك الحالية (Excel و Power BI) في متطلبات الوظيفة</h4>
+            <h4 style="color: var(--text-h); font-size: 1.4rem; margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">دمج مهاراتك الحالية (Excel و Power BI) في متطلبات الوظيفة</h4>
             <p>يشير تحليلك لموقفك الحالي إلى امتلاكك لخبرة عملية ممتازة في تحليل بيانات أرقام المبيعات، وحساب الأهداف، وتحديد التارجت (Target) باستخدام أدوات قوية مثل Microsoft Excel و Power BI. من الناحية الاستراتيجية، تُمثل هذه المهارات التحليلية الجوهرية العمود الفقري التشغيلي لدور مساعد عمليات المبيعات، وهي نقطة القوة التي يجب أن تتمحور حولها في مقابلتك الشخصية لسد أي فجوة محتملة ناتجة عن عدم خبرتك المسبقة في قطاع المطابخ السحابية أو الواجهات البرمجية لأنظمة CRM مثل Salesforce.</p>
-            <p>في بيئات العمل المؤسسية المعاصرة والمتقدمة، لا تقف أدوات تحليل البيانات (Business Intelligence Tools) وتطبيقات الجداول الحسابية بمعزل عن أنظمة إدارة علاقات العملاء الأساسية؛ بل هي أنظمة متكاملة ومتخادمة. يُعد إتقانك لهذه الأدوات أداة لا غنى عنها في المهام التالية:</p>
+            <p style="margin-top: 15px;">في بيئات العمل المؤسسية المعاصرة والمتقدمة، لا تقف أدوات تحليل البيانات (Business Intelligence Tools) وتطبيقات الجداول الحسابية بمعزل عن أنظمة إدارة علاقات العملاء الأساسية؛ بل هي أنظمة متكاملة ومتخادمة. يُعد إتقانك لهذه الأدوات أداة لا غنى عنها في المهام التالية:</p>
 
-            <p style="margin-top: 15px;"><strong>أولاً: التكامل المتفوق بين Power BI و Salesforce</strong><br>بالرغم من أن نظام Salesforce يمتلك أدوات إعداد تقارير مدمجة، إلا أن الشركات سريعة النمو والتي تتعامل مع كميات بيانات هائلة غالباً ما تصل إلى حدود قدرات هذه التقارير الافتراضية، وهنا تبرز الحاجة الماسة لبرنامج Power BI.<br>
-            هندسة البيانات المتقدمة: يُمكن ربط Power BI بشكل مباشر مع بيئة Salesforce من خلال موصلات البيانات الأصلية (Native Connectors)، أو واجهات برمجة التطبيقات (APIs)، أو عبر أدوات دمج وسيطة سحابية تتيح نقل البيانات كـ OData endpoints. هذا الربط الاستراتيجي يسمح لك كمحلل عمليات بسحب واستخراج البيانات الخام الخاصة بالعملاء، والصفقات، والنشاطات البيعية بشكل لحظي من قواعد بيانات Salesforce وتغذيتها في محرك Power BI لبناء نماذج بيانات (Data Models) معقدة وربطها بمصادر بيانات أخرى (مثل جداول ميزانيات التسويق أو أهداف الشركة المالية المحددة في أنظمة خارجية).<br>
-            التقارير المضمنة (Embedded Analytics): الميزة الأقوى التي يمكنك طرحها في المقابلة هي قدرتك على تصميم لوحات معلومات (Dashboards) تفاعلية وسهلة القراءة في Power BI، ثم تضمين هذه اللوحات (Embedding) لتعمل مباشرة داخل واجهة مستخدم Salesforce ذاتها (باستخدام تقنيات مثل Lightning components أو iframes). هذا الإجراء الجذري يمنع تشتت فريق المبيعات والإدارة، حيث يمكنهم رؤية مؤشرات أدائهم المعقدة، وتتبع مسار تحقيق الأهداف (Quota Attainment)، ومراجعة دقة التنبؤ المالي ضمن نفس البيئة التي يدخلون فيها بيانات عملائهم، مما يعزز تبني النظام (System Adoption) ويرفع كفاءة التشغيل.</p>
+            <div style="background: var(--surface-200); padding: 24px; border-radius: var(--radius-sm); margin-top: 24px;">
+                <p><strong>أولاً: التكامل المتفوق بين Power BI و Salesforce</strong><br>بالرغم من أن نظام Salesforce يمتلك أدوات إعداد تقارير مدمجة، إلا أن الشركات سريعة النمو والتي تتعامل مع كميات بيانات هائلة غالباً ما تصل إلى حدود قدرات هذه التقارير الافتراضية، وهنا تبرز الحاجة الماسة لبرنامج Power BI.<br><br>
+                هندسة البيانات المتقدمة: يُمكن ربط Power BI بشكل مباشر مع بيئة Salesforce من خلال موصلات البيانات الأصلية (Native Connectors)، أو واجهات برمجة التطبيقات (APIs)، أو عبر أدوات دمج وسيطة سحابية تتيح نقل البيانات كـ OData endpoints. هذا الربط الاستراتيجي يسمح لك كمحلل عمليات بسحب واستخراج البيانات الخام الخاصة بالعملاء، والصفقات، والنشاطات البيعية بشكل لحظي من قواعد بيانات Salesforce وتغذيتها في محرك Power BI لبناء نماذج بيانات (Data Models) معقدة وربطها بمصادر بيانات أخرى (مثل جداول ميزانيات التسويق أو أهداف الشركة المالية المحددة في أنظمة خارجية).<br><br>
+                التقارير المضمنة (Embedded Analytics): الميزة الأقوى التي يمكنك طرحها في المقابلة هي قدرتك على تصميم لوحات معلومات (Dashboards) تفاعلية وسهلة القراءة في Power BI، ثم تضمين هذه اللوحات (Embedding) لتعمل مباشرة داخل واجهة مستخدم Salesforce ذاتها (باستخدام تقنيات مثل Lightning components أو iframes). هذا الإجراء الجذري يمنع تشتت فريق المبيعات والإدارة، حيث يمكنهم رؤية مؤشرات أدائهم المعقدة، وتتبع مسار تحقيق الأهداف (Quota Attainment)، ومراجعة دقة التنبؤ المالي ضمن نفس البيئة التي يدخلون فيها بيانات عملائهم، مما يعزز تبني النظام (System Adoption) ويرفع كفاءة التشغيل.</p>
+            </div>
 
-            <p style="margin-top: 15px;"><strong>ثانياً: قوة Excel كأداة تحول وتنظيف للبيانات (Data Cleansing & Transformation)</strong><br>أنت ذكرت معرفتك بـ Excel، وهو سلاح بالغ الأهمية في عمليات المبيعات. قبل أن يتم رفع آلاف قوائم العملاء المحتملين الجدد إلى نظام Salesforce، يجب أن تمر هذه البيانات بعملية تنظيف وتنسيق صارمة لضمان عدم تكرار الحسابات أو إدخال بيانات غير صالحة.<br>
-            باستخدام ميزات متقدمة في Excel مثل أداة "Power Query"، يمكنك أتمتة عمليات سحب وتصفية البيانات الواردة من مصادر متعددة، ودمجها، وتنسيقها لتتوافق مع معايير جودة البيانات الصارمة التي تتطلبها قواعد بيانات الشركة. يمكنك دمج البيانات المستخرجة من Salesforce لإنشاء نماذج علائقية في Excel، وإجراء تحليلات متقدمة ومعقدة لهياكل العمولات التي يستحيل بناؤها داخل واجهة التقارير العادية لبرامج CRM، ومن ثم تقديم توصيات إدارية دقيقة مبنية على حسابات معتمدة وموثقة. يُترجم هذا الدمج التكنولوجي الذي تمتلكه إلى كفاءة تشغيلية مباشرة توفر ساعات طويلة من العمل اليدوي المرهق للمؤسسة، وتمنع كوارث مالية تتعلق بدفع عمولات خاطئة.</p>
+            <div style="background: var(--surface-200); padding: 24px; border-radius: var(--radius-sm); margin-top: 24px;">
+                <p><strong>ثانياً: قوة Excel كأداة تحول وتنظيف للبيانات (Data Cleansing & Transformation)</strong><br>أنت ذكرت معرفتك بـ Excel، وهو سلاح بالغ الأهمية في عمليات المبيعات. قبل أن يتم رفع آلاف قوائم العملاء المحتملين الجدد إلى نظام Salesforce، يجب أن تمر هذه البيانات بعملية تنظيف وتنسيق صارمة لضمان عدم تكرار الحسابات أو إدخال بيانات غير صالحة.<br><br>
+                باستخدام ميزات متقدمة في Excel مثل أداة "Power Query"، يمكنك أتمتة عمليات سحب وتصفية البيانات الواردة من مصادر متعددة، ودمجها، وتنسيقها لتتوافق مع معايير جودة البيانات الصارمة التي تتطلبها قواعد بيانات الشركة. يمكنك دمج البيانات المستخرجة من Salesforce لإنشاء نماذج علائقية في Excel، وإجراء تحليلات متقدمة ومعقدة لهياكل العمولات التي يستحيل بناؤها داخل واجهة التقارير العادية لبرامج CRM، ومن ثم تقديم توصيات إدارية دقيقة مبنية على حسابات معتمدة وموثقة. يُترجم هذا الدمج التكنولوجي الذي تمتلكه إلى كفاءة تشغيلية مباشرة توفر ساعات طويلة من العمل اليدوي المرهق للمؤسسة، وتمنع كوارث مالية تتعلق بدفع عمولات خاطئة.</p>
+            </div>
         </div>
     </section>
 
     <section id="interview-arsenal">
         <h2 class="reveal">الدليل المعرفي الشامل للتحضير للمقابلة الشخصية</h2>
-        <p class="reveal" style="margin-bottom: 30px;">بناءً على تحليل شامل لمتطلبات الوصف الوظيفي المنشور لشركة KitchenPark ، والطبيعة التشغيلية والثقافة المؤسسية للشركة، يتطلب النجاح في هذه المقابلة إظهار قدرة فائقة على التفكير المنهجي، وإبراز كيفية ربطك لتحليل البيانات الجافة بحل المشكلات التجارية والتشغيلية الحقيقية التي تواجهها الشركة كل يوم.<br><br>لقد صممنا هذا الدليل ليزودك بالترسانة المعرفية والتكتيكية اللازمة لاجتياز المقابلة غداً بثقة تامة:</p>
+        <p class="reveal" style="margin-bottom: 40px; font-size: 1.2rem;">بناءً على تحليل شامل لمتطلبات الوصف الوظيفي المنشور لشركة KitchenPark ، والطبيعة التشغيلية والثقافة المؤسسية للشركة، يتطلب النجاح في هذه المقابلة إظهار قدرة فائقة على التفكير المنهجي، وإبراز كيفية ربطك لتحليل البيانات الجافة بحل المشكلات التجارية والتشغيلية الحقيقية التي تواجهها الشركة كل يوم.<br><br>لقد صممنا هذا الدليل ليزودك بالترسانة المعرفية والتكتيكية اللازمة لاجتياز المقابلة غداً بثقة تامة:</p>
 
-        <h3 style="color: var(--accent); margin-bottom: 15px;" class="reveal">1. إتقان المصطلحات التشغيلية المحورية (Speak the Lingo)</h3>
-        <p class="reveal" style="margin-bottom: 20px;">لا يكفي أن تكون محلل بيانات جيداً؛ بل يتوجب عليك في المقابلة التحدث بلغة المبيعات وعمليات الإيرادات بثقة تامة لتظهر كـ "مُطّلع داخلي" رغم كونك قادماً من خارج الصناعة. من أهم المفاهيم والمصطلحات التي يجب أن تنسجها في إجاباتك:</p>
+        <h3 style="color: var(--text-h); margin-bottom: 24px; font-size: 1.6rem;" class="reveal">1. إتقان المصطلحات التشغيلية المحورية (Speak the Lingo)</h3>
+        <p class="reveal" style="margin-bottom: 30px;">لا يكفي أن تكون محلل بيانات جيداً؛ بل يتوجب عليك في المقابلة التحدث بلغة المبيعات وعمليات الإيرادات بثقة تامة لتظهر كـ "مُطّلع داخلي" رغم كونك قادماً من خارج الصناعة. من أهم المفاهيم والمصطلحات التي يجب أن تنسجها في إجاباتك:</p>
         
-        <details class="reveal">
-            <summary>توجيه العملاء المحتملين (Lead Routing / Assignment) <span>+</span></summary>
-            <p>هي الآلية المنهجية المبرمجة لتوزيع العملاء الجدد الذين أبدوا اهتماماً (عن طريق تعبئة نموذج في موقع الويب مثلاً) وتوجيههم على الفور إلى مندوبي المبيعات المناسبين. يعتمد هذا التوجيه على معايير وقواعد منطقية محددة سلفاً؛ مثل الموقع الجغرافي للعميل، وحجم الشركة، واللغة، ومستوى أداء المندوب. الهدف من التوجيه الصحيح والسريع هو ضمان تواصل المندوب مع العميل بينما لا يزال اهتمامه في ذروته، مما يعظم فرص الإغلاق البيعي.</p>
-        </details>
-        <details class="reveal">
-            <summary>مراحل الصفقة (Deal Stages / Pipeline Stages) <span>+</span></summary>
-            <p>هي الخطوات المتسلسلة والمنطقية التي يمر بها العميل المحتمل (المطعم في هذه الحالة) داخل ما يُعرف بـ "خط أنابيب المبيعات" (Sales Pipeline) منذ نقطة الاتصال الأولية وحتى توقيع العقد النهائي. تشمل هذه المراحل بشكل نمطي: الاتصال الأولي (Initial Contact)، ثم مرحلة التأهيل (Qualification) للتأكد من الملاءمة المادية والتشغيلية للمطعم للعمل كمطبخ سحابي، ثم إرسال العرض المالي أو الجولة الميدانية في المطبخ (Proposal Sent/Tour)، تليها مرحلة التفاوض (Negotiation)، وأخيراً إغلاق الصفقة سواء بالنجاح (Closed Won) أو بالفشل (Closed Lost). مراقبة انتقال الصفقات بسلاسة عبر هذه المراحل وتحديثها الدقيق من قبل المندوبين هو أحد صميم مسؤولياتك.</p>
-        </details>
-        <details class="reveal">
-            <summary>سلامة البيانات (Data Integrity / CRM Hygiene) <span>+</span></summary>
-            <p>مصطلح بالغ الأهمية. يشير إلى دقة، واتساق، واكتمال، وموثوقية البيانات المخزنة في النظام طوال دورة حياتها. في بيئات المبيعات السريعة، يقوم المندوبون بإدخال بيانات متسرعة؛ مما يؤدي إلى سجلات مكررة (Duplicates)، وحقول فارغة، ومراحل صفقات غير محدثة. هذا التلوث للبيانات يعمي الإدارة عن رؤية الواقع ويؤدي لتنبؤ مالي مشوه. مهمتك هي حراسة هذه البيانات من خلال إعداد "قواعد تحقق" (Validation Rules) تمنع إدخال البيانات الخاطئة تقنياً، وإجراء عمليات "تنظيف بيانات" (Data Cleansing) دورية.</p>
-        </details>
+        <div class="reveal">
+            <details>
+                <summary>توجيه العملاء المحتملين (Lead Routing / Assignment) <span>+</span></summary>
+                <p>هي الآلية المنهجية المبرمجة لتوزيع العملاء الجدد الذين أبدوا اهتماماً (عن طريق تعبئة نموذج في موقع الويب مثلاً) وتوجيههم على الفور إلى مندوبي المبيعات المناسبين. يعتمد هذا التوجيه على معايير وقواعد منطقية محددة سلفاً؛ مثل الموقع الجغرافي للعميل، وحجم الشركة، واللغة، ومستوى أداء المندوب. الهدف من التوجيه الصحيح والسريع هو ضمان تواصل المندوب مع العميل بينما لا يزال اهتمامه في ذروته، مما يعظم فرص الإغلاق البيعي.</p>
+            </details>
+            <details>
+                <summary>مراحل الصفقة (Deal Stages / Pipeline Stages) <span>+</span></summary>
+                <p>هي الخطوات المتسلسلة والمنطقية التي يمر بها العميل المحتمل (المطعم في هذه الحالة) داخل ما يُعرف بـ "خط أنابيب المبيعات" (Sales Pipeline) منذ نقطة الاتصال الأولية وحتى توقيع العقد النهائي. تشمل هذه المراحل بشكل نمطي: الاتصال الأولي (Initial Contact)، ثم مرحلة التأهيل (Qualification) للتأكد من الملاءمة المادية والتشغيلية للمطعم للعمل كمطبخ سحابي، ثم إرسال العرض المالي أو الجولة الميدانية في المطبخ (Proposal Sent/Tour)، تليها مرحلة التفاوض (Negotiation)، وأخيراً إغلاق الصفقة سواء بالنجاح (Closed Won) أو بالفشل (Closed Lost). مراقبة انتقال الصفقات بسلاسة عبر هذه المراحل وتحديثها الدقيق من قبل المندوبين هو أحد صميم مسؤولياتك.</p>
+            </details>
+            <details>
+                <summary>سلامة البيانات (Data Integrity / CRM Hygiene) <span>+</span></summary>
+                <p>مصطلح بالغ الأهمية. يشير إلى دقة، واتساق، واكتمال، وموثوقية البيانات المخزنة في النظام طوال دورة حياتها. في بيئات المبيعات السريعة، يقوم المندوبون بإدخال بيانات متسرعة؛ مما يؤدي إلى سجلات مكررة (Duplicates)، وحقول فارغة، ومراحل صفقات غير محدثة. هذا التلوث للبيانات يعمي الإدارة عن رؤية الواقع ويؤدي لتنبؤ مالي مشوه. مهمتك هي حراسة هذه البيانات من خلال إعداد "قواعد تحقق" (Validation Rules) تمنع إدخال البيانات الخاطئة تقنياً، وإجراء عمليات "تنظيف بيانات" (Data Cleansing) دورية.</p>
+            </details>
+        </div>
 
-        <h3 style="color: var(--accent); margin-top: 40px; margin-bottom: 15px;" class="reveal">2. استراتيجيات تكتيكية للإجابة على الأسئلة المتوقعة</h3>
-        <p class="reveal" style="margin-bottom: 20px;">ستتمحور أسئلة المقابلة في الغالب حول تقييم قدرتك على سد الفجوة بين استخراج البيانات من جهة، والتنفيذ التشغيلي والتعامل مع السلوكيات البشرية لفريق المبيعات من جهة أخرى. يُنصح بشدة استخدام منهجية "STAR" العالمية (الموقف Situation، المهمة Task، الإجراء Action، النتيجة Result) في صياغة إجاباتك لسرد قصص نجاحك السابقة بشكل مهني.</p>
+        <h3 style="color: var(--text-h); margin-top: 60px; margin-bottom: 24px; font-size: 1.6rem;" class="reveal">2. استراتيجيات تكتيكية للإجابة على الأسئلة المتوقعة</h3>
+        <p class="reveal" style="margin-bottom: 30px;">ستتمحور أسئلة المقابلة في الغالب حول تقييم قدرتك على سد الفجوة بين استخراج البيانات من جهة، والتنفيذ التشغيلي والتعامل مع السلوكيات البشرية لفريق المبيعات من جهة أخرى. يُنصح بشدة استخدام منهجية "STAR" العالمية (الموقف Situation، المهمة Task، الإجراء Action، النتيجة Result) في صياغة إجاباتك لسرد قصص نجاحك السابقة بشكل مهني.</p>
 
         <div class="glass-card reveal">
-            <strong style="color: var(--accent);">السؤال المتوقع حول قلة الخبرة المباشرة في استخدام Salesforce:</strong>
-            <p style="margin-top: 10px;"><strong>الاستراتيجية:</strong> هذا هو التحدي الأكبر لديك. لا تعتذر عن نقص الخبرة المباشرة كمدير (Admin) للنظام، بل حوّل مسار الحديث بذكاء نحو نقاط قوتك التحليلية الهائلة. يمكنك الإجابة بأن الفهم العميق لهيكلة البيانات (Data Modeling) وكيفية عمل قواعد البيانات العلائقية (Relational Databases) والذي اكتسبته من عملك المتقدم في بناء النماذج المعقدة في Power BI و Excel، يُشكل أساساً تقنياً صلباً يتيح لك فهم وامتصاص واجهة وخلفية Salesforce بشكل أسرع من أي مستخدم عادي. التكنولوجيا تختلف وتتطور، لكن منطق معالجة البيانات، واستخراج التقارير، وضمان سلامتها هو مبدأ هندسي ثابت لا يتغير. وضّح لهم أن مهاراتك تسمح لك باستخراج أي بيانات مهما كانت معقدة من النظام ومعالجتها خارجياً بفعالية قصوى في Excel كحل فوري ومتقدم لأي نقص مؤقت في الإعدادات المعقدة للنظام الأساسي.</p>
+            <strong style="color: var(--brand-light); font-size: 1.2rem; display: block; margin-bottom: 15px;">السؤال المتوقع حول قلة الخبرة المباشرة في استخدام Salesforce:</strong>
+            <p><strong>الاستراتيجية:</strong> هذا هو التحدي الأكبر لديك. لا تعتذر عن نقص الخبرة المباشرة كمدير (Admin) للنظام، بل حوّل مسار الحديث بذكاء نحو نقاط قوتك التحليلية الهائلة. يمكنك الإجابة بأن الفهم العميق لهيكلة البيانات (Data Modeling) وكيفية عمل قواعد البيانات العلائقية (Relational Databases) والذي اكتسبته من عملك المتقدم في بناء النماذج المعقدة في Power BI و Excel، يُشكل أساساً تقنياً صلباً يتيح لك فهم وامتصاص واجهة وخلفية Salesforce بشكل أسرع من أي مستخدم عادي. التكنولوجيا تختلف وتتطور، لكن منطق معالجة البيانات، واستخراج التقارير، وضمان سلامتها هو مبدأ هندسي ثابت لا يتغير. وضّح لهم أن مهاراتك تسمح لك باستخراج أي بيانات مهما كانت معقدة من النظام ومعالجتها خارجياً بفعالية قصوى في Excel كحل فوري ومتقدم لأي نقص مؤقت في الإعدادات المعقدة للنظام الأساسي.</p>
         </div>
 
         <div class="glass-card reveal">
-            <strong style="color: var(--accent);">السؤال المتوقع حول كيفية بناء لوحات معلومات (Dashboards) للإدارة التنفيذية:</strong>
-            <p style="margin-top: 10px;"><strong>الاستراتيجية:</strong> قد يُطلب منك تصور لوحة تحكم تطلبها القيادة العليا لفهم مسار المبيعات. يجب أن يرتكز ردك على مفهوم "الرؤى القابلة للتنفيذ" (Actionable Insights) وليس مجرد عرض جداول أرقام ميتة. وضح أن اللوحة المثالية التي ستبنيها في Power BI ستتضمن نوعين من المؤشرات:<br>
+            <strong style="color: var(--brand-light); font-size: 1.2rem; display: block; margin-bottom: 15px;">السؤال المتوقع حول كيفية بناء لوحات معلومات (Dashboards) للإدارة التنفيذية:</strong>
+            <p><strong>الاستراتيجية:</strong> قد يُطلب منك تصور لوحة تحكم تطلبها القيادة العليا لفهم مسار المبيعات. يجب أن يرتكز ردك على مفهوم "الرؤى القابلة للتنفيذ" (Actionable Insights) وليس مجرد عرض جداول أرقام ميتة. وضح أن اللوحة المثالية التي ستبنيها في Power BI ستتضمن نوعين من المؤشرات:<br><br>
             - مؤشرات استباقية (Leading Indicators): مثل حجم الصفقات الجديدة الداخلة في الأنبوب البيعي، معدلات الاستجابة، وسرعة تحرك الصفقات بين المراحل.<br>
-            - مؤشرات متأخرة (Lagging Indicators): مثل الإيرادات المحققة فعلياً، نسب الإغلاق النهائي (Win Rates)، ومعدل تحقيق التارجت للمندوبين.<br>
+            - مؤشرات متأخرة (Lagging Indicators): مثل الإيرادات المحققة فعلياً، نسب الإغلاق النهائي (Win Rates)، ومعدل تحقيق التارجت للمندوبين.<br><br>
             مع التأكيد على توفير ميزة "التعمق" (Drill-down) التي تتيح للإدارة النقر على رسم بياني عام لفهم الانحراف في أداء منطقة جغرافية معينة (مثلاً الرياض مقابل دبي) أو تتبع أداء كل مندوب على حدة لمعرفة أين تكمن المشكلة بدقة.</p>
         </div>
 
         <div class="glass-card reveal">
-            <strong style="color: var(--accent);">السؤال السلوكي حول كيفية إقناع مندوبي المبيعات بالالتزام بإدخال وتحديث البيانات في النظام:</strong>
-            <p style="margin-top: 10px;"><strong>الاستراتيجية:</strong> هذا تحدٍ كلاسيكي ومزمن في دور عمليات المبيعات؛ المندوبون يكرهون إدخال البيانات ويعتبرونه عملاً بيروقراطياً يعطلهم عن البيع. تعتمد الإجابة النموذجية والذكية على المزج بين "العصا والجزرة" (التكنولوجيا والتحفيز):<br>
+            <strong style="color: var(--brand-light); font-size: 1.2rem; display: block; margin-bottom: 15px;">السؤال السلوكي حول كيفية إقناع مندوبي المبيعات بالالتزام بإدخال وتحديث البيانات في النظام:</strong>
+            <p><strong>الاستراتيجية:</strong> هذا تحدٍ كلاسيكي ومزمن في دور عمليات المبيعات؛ المندوبون يكرهون إدخال البيانات ويعتبرونه عملاً بيروقراطياً يعطلهم عن البيع. تعتمد الإجابة النموذجية والذكية على المزج بين "العصا والجزرة" (التكنولوجيا والتحفيز):<br><br>
             - الجانب التكنولوجي: ستعمل على هندسة النظام لتقليل الحقول الإلزامية غير الضرورية لتسريع الإدخال، ولكن في نفس الوقت، ستقوم بإعداد "قواعد تحقق" (Validation Rules) صارمة تمنع النظام من قبول نقل الصفقة إلى المرحلة النهائية (مرحلة توقيع العقد) دون تعبئة الحقول الجوهرية الحرجة.<br>
             - الجانب التحفيزي (الجزرة): ستقوم بتعليم المندوبين وتدريبهم، موضحاً لهم بوضوح أن "دقة بياناتك في النظام ترتبط مباشرة وبشكل آلي بدقة وسرعة حساب عمولاتك المالية في نهاية الشهر". عندما يدرك المندوب أن أي خطأ أو إهمال في النظام سيؤخر حصوله على أمواله وعمولته، فإنه سيخلق حافزاً شخصياً وداخلياً قوياً لديه للالتزام المطلق بالنظافة التكنولوجية لبياناته، دون الحاجة إلى التهديد الإداري المستمر.</p>
         </div>
 
-        <h3 style="color: var(--accent); margin-top: 40px; margin-bottom: 15px;" class="reveal">3. أسئلة استراتيجية لتطرحها أنت في نهاية المقابلة</h3>
-        <p class="reveal" style="margin-bottom: 20px;">في مقابلات الأدوار التشغيلية، تقيّمك الإدارة ليس فقط بناءً على إجاباتك، بل أيضاً بناءً على مستوى وعمق الأسئلة التي تطرحها عليهم، فهذا يعكس طريقة تفكيرك كشريك استراتيجي في العمل. اطرح سؤالين أو ثلاثة من هذه القائمة لترك انطباع احترافي قوي:</p>
+        <h3 style="color: var(--text-h); margin-top: 60px; margin-bottom: 24px; font-size: 1.6rem;" class="reveal">3. أسئلة استراتيجية لتطرحها أنت في نهاية المقابلة</h3>
+        <p class="reveal" style="margin-bottom: 30px;">في مقابلات الأدوار التشغيلية، تقيّمك الإدارة ليس فقط بناءً على إجاباتك، بل أيضاً بناءً على مستوى وعمق الأسئلة التي تطرحها عليهم، فهذا يعكس طريقة تفكيرك كشريك استراتيجي في العمل. اطرح سؤالين أو ثلاثة من هذه القائمة لترك انطباع احترافي قوي:</p>
 
-        <div class="glass-card spotlight reveal" style="border-right-color: transparent;">
-            <p style="font-size: 1.1rem; font-style: italic;">"من واقع خبرتكم الحالية في التوسع السريع للشركة في الخليج، ما هي أكبر عقبة أو 'عنق زجاجة' (Bottleneck) يواجهها فريق المبيعات اليوم في دورة البيع؟ وكيف تتوقعون مني كمساعد عمليات مبيعات في أول 90 يوماً أن أساهم في حلها؟"</p>
+        <div class="glass-card spotlight reveal" style="border-right: none; border-left: 3px solid var(--brand-primary);">
+            <p style="font-size: 1.2rem; font-style: italic; color: #fff;">"من واقع خبرتكم الحالية في التوسع السريع للشركة في الخليج، ما هي أكبر عقبة أو 'عنق زجاجة' (Bottleneck) يواجهها فريق المبيعات اليوم في دورة البيع؟ وكيف تتوقعون مني كمساعد عمليات مبيعات في أول 90 يوماً أن أساهم في حلها؟"</p>
         </div>
-        <div class="glass-card spotlight reveal" style="border-right-color: transparent;">
-            <p style="font-size: 1.1rem; font-style: italic;">"بالنظر إلى أن الوظيفة تتطلب إدارة نماذج العمولات المالية، هل يمكنكم إعطائي لمحة عامة عن مدى تعقيد هياكل العمولات الحالية (هل هي Tiered، أم Revenue Share)؟ وما هي التحديات التي تواجهكم حالياً في دقة أو توقيت حسابها وتوزيعها؟"</p>
+        <div class="glass-card spotlight reveal" style="border-right: none; border-left: 3px solid var(--brand-primary);">
+            <p style="font-size: 1.2rem; font-style: italic; color: #fff;">"بالنظر إلى أن الوظيفة تتطلب إدارة نماذج العمولات المالية، هل يمكنكم إعطائي لمحة عامة عن مدى تعقيد هياكل العمولات الحالية (هل هي Tiered، أم Revenue Share)؟ وما هي التحديات التي تواجهكم حالياً في دقة أو توقيت حسابها وتوزيعها؟"</p>
         </div>
-        <div class="glass-card spotlight reveal" style="border-right-color: transparent;">
-            <p style="font-size: 1.1rem; font-style: italic;">"ذكرتم في الوصف الوظيفي أن هذا الدور سيعمل بتعاون وثيق مع فريق (RevOps). هل يمكنكم توضيح كيف يتم تقسيم المسؤوليات اليومية الاستراتيجية بين عمليات المبيعات في مكتب عمّان وفريق عمليات الإيرادات الإقليمي أو العالمي؟"</p>
+        <div class="glass-card spotlight reveal" style="border-right: none; border-left: 3px solid var(--brand-primary);">
+            <p style="font-size: 1.2rem; font-style: italic; color: #fff;">"ذكرتم في الوصف الوظيفي أن هذا الدور سيعمل بتعاون وثيق مع فريق (RevOps). هل يمكنكم توضيح كيف يتم تقسيم المسؤوليات اليومية الاستراتيجية بين عمليات المبيعات في مكتب عمّان وفريق عمليات الإيرادات الإقليمي أو العالمي؟"</p>
         </div>
 
-        <p class="reveal" style="text-align: center; margin-top: 50px; font-weight: bold; font-size: 1.2rem; color: var(--accent);">
-            إن نجاحك في هذه المقابلة لا يكمن في إقناعهم بأنك خبير في صناعة المطاعم، بل في إثبات قدرتك الاستثنائية على بناء وتحليل الأنظمة، وحل المشكلات التشغيلية المعقدة، وامتلاكك لأساس تقني وتحليلي متين في البيانات يمكن تكييفه بسرعة فائقة لخدمة أهداف التوسع الطموحة لشركة KitchenPark في أسواق الشرق الأوسط.<br><br>انتهى النص
-        </p>
+        <div class="glass-card reveal" style="text-align: center; margin-top: 80px; background: rgba(9, 153, 153, 0.05); border-color: var(--brand-primary);">
+            <p style="font-weight: 700; font-size: 1.3rem; color: var(--text-h);">
+                إن نجاحك في هذه المقابلة لا يكمن في إقناعهم بأنك خبير في صناعة المطاعم، بل في إثبات قدرتك الاستثنائية على بناء وتحليل الأنظمة، وحل المشكلات التشغيلية المعقدة، وامتلاكك لأساس تقني وتحليلي متين في البيانات يمكن تكييفه بسرعة فائقة لخدمة أهداف التوسع الطموحة لشركة KitchenPark في أسواق الشرق الأوسط.
+            </p>
+            <p style="margin-top: 15px; color: var(--brand-light);">انتهى النص</p>
+        </div>
     </section>
 
     <script>
-        // دالة التبويبات (Tabs)
+        // Tab switching logic with smooth animation trigger
         function openTab(evt, tabId) {
-            let i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
+            const tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].classList.remove("active");
             }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            
+            const tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
             }
+            
             document.getElementById(tabId).classList.add("active");
-            evt.currentTarget.className += " active";
+            evt.currentTarget.classList.add("active");
         }
 
-        // تأثيرات الظهور عند التمرير (Scroll Reveal)
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
-            }
-        }
-        window.addEventListener("scroll", reveal);
-        reveal(); // تشغيل عند التحميل الأولي
+        // Scroll Reveal Animation Intersection Observer
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll(".reveal");
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
 
-        // شريط التقدم الجانبي
-        window.onscroll = function() {
-            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            var scrolled = (winScroll / height) * 100;
-            document.getElementById("progress-bar").style.height = scrolled + "%";
-        };
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Trigger only once for performance
+                    }
+                });
+            }, observerOptions);
+
+            reveals.forEach(reveal => revealObserver.observe(reveal));
+        });
+
+        // Top Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        });
     </script>
 </body>
 </html>
